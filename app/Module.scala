@@ -1,6 +1,7 @@
 import com.google.inject.AbstractModule
 import java.time.Clock
 
+import actors.module.{MessengrStartUpActors}
 import services.{ApplicationTimer, AtomicCounter, Counter}
 
 /**
@@ -23,6 +24,9 @@ class Module extends AbstractModule {
     bind(classOf[ApplicationTimer]).asEagerSingleton()
     // Set AtomicCounter as the implementation for Counter.
     bind(classOf[Counter]).to(classOf[AtomicCounter])
+  
+    // Start the required actors when the application starts up
+    bind(classOf[MessengrStartUpActors]).asEagerSingleton()
   }
 
 }
