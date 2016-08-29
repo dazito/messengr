@@ -18,7 +18,7 @@ GET     /api/v0/chat/private/list                   controllers.ChatController.c
 GET     /api/v0/chat/public/list                    controllers.ChatController.chatPublicList
 GET     /api/v0/chat/user/:userId/details           controllers.ChatController.getUserDetails(userId: String)
 GET     /api/v0/message/:messageId                  controllers.MessageController.getMessageById(messageId: String)
-GET     /api/v0/ws                                  controllers.WebSocketController.createWebSocket
+GET     /api/v0/ws/:userId                          controllers.WebSocketController.createWebSocket(userId: String)
 
 POST    /api/v0/message/private/:destinationId      controllers.MessageController.sendPrivateMessage(destinationId: String)
 POST    /api/v0/message/public/:destinationId       controllers.MessageController.sendPublicMessage(destinationId: String)
