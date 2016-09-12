@@ -12,7 +12,8 @@ libraryDependencies ++= Seq(
   ws,
   "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test,
   "com.typesafe.akka" %% "akka-persistence" % "2.4.9",
-  "com.github.dnvriend" %% "akka-persistence-inmemory" % "1.3.7"
+  "com.github.dnvriend" %% "akka-persistence-inmemory" % "1.3.7",
+  "com.github.nscala-time" %% "nscala-time" % "2.12.0"
 )
 
 

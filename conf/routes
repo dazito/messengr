@@ -13,14 +13,15 @@ GET     /message                                    controllers.AsyncController.
 GET     /assets/*file                               controllers.Assets.versioned(path="/public", file: Asset)
 
 #########       REST API        #########
-GET     /api/v0/chat/list                           controllers.ChatController.chatList
-GET     /api/v0/chat/private/list                   controllers.ChatController.chatPrivateList
-GET     /api/v0/chat/public/list                    controllers.ChatController.chatPublicList
-GET     /api/v0/chat/user/:userId/details           controllers.ChatController.getUserDetails(userId: String)
-GET     /api/v0/message/:messageId                  controllers.MessageController.getMessageById(messageId: String)
-GET     /api/v0/ws/:userId                          controllers.WebSocketController.createWebSocket(userId: String)
+GET     /api/v0/chat/list                             controllers.ChatController.chatList
+GET     /api/v0/chat/private/list                     controllers.ChatController.chatPrivateList
+GET     /api/v0/chat/public/list                      controllers.ChatController.chatPublicList
+GET     /api/v0/chat/user/:userId/details             controllers.ChatController.getUserDetails(userId: String)
+GET     /api/v0/message/:messageId                    controllers.MessageController.getMessageById(messageId: String)
+GET     /api/v0/ws/message/:userId                    controllers.WebSocketController.messageWebSocket(userId: String)
+GET     /api/v0/ws/channel/:roomId/:userId            controllers.WebSocketController.roomWebSocket(roomId: String, userId: String)
 
-POST    /api/v0/message/private/:destinationId      controllers.MessageController.sendPrivateMessage(destinationId: String)
-POST    /api/v0/message/public/:destinationId       controllers.MessageController.sendPublicMessage(destinationId: String)
+POST    /api/v0/message/private/:destinationId        controllers.MessageController.sendPrivateMessage(destinationId: String)
+POST    /api/v0/message/public/:destinationId         controllers.MessageController.sendPublicMessage(destinationId: String)
 
-DELETE  /api/v0/message/:messageId                  controllers.MessageController.deleteMessage(messageId: String)
+DELETE  /api/v0/message/:messageId                    controllers.MessageController.deleteMessage(messageId: String)

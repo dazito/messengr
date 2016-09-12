@@ -2,10 +2,13 @@ package controllers
 
 import javax.inject.Inject
 
-import actors.WebSocketActor
+import actors.{MessageActor, RoomActor}
 import akka.actor.ActorSystem
 import akka.stream.Materializer
+import json.{IncomingMessage, IncomingRoomMessage, OutgoingMessage, OutgoingRoomMessage}
+import play.api.libs.json.Json
 import play.api.libs.streams.ActorFlow
+import play.api.mvc.WebSocket.MessageFlowTransformer
 import play.api.mvc.{Controller, WebSocket}
 
 /**
@@ -13,8 +16,20 @@ import play.api.mvc.{Controller, WebSocket}
   */
 class WebSocketController @Inject() (implicit system: ActorSystem, materializer: Materializer) extends Controller{
   
-  def createWebSocket(userId: String) = WebSocket.accept[String, String] {
-    request => ActorFlow.actorRef(out => WebSocketActor.props(out, userId))
+  implicit val inMessageFormat = Json.format[IncomingMessage]
+  implicit val outMessageFormat = Json.format[OutgoingMessage]
+  implicit val inRoomMessageFormat = Json.format[IncomingRoomMessage]
+  implicit val outRoomMessageFormat = Json.format[OutgoingRoomMessage]
+  
+  implicit val messageFlowTransformer = MessageFlowTransformer.jsonMessageFlowTransformer[IncomingMessage, OutgoingMessage]
+  implicit val roomFlowTransformer = MessageFlowTransformer.jsonMessageFlowTransformer[IncomingRoomMessage, OutgoingRoomMessage]
+  
+  def messageWebSocket(userId: String) = WebSocket.accept[IncomingMessage, OutgoingMessage] {
+    request => ActorFlow.actorRef(out => MessageActor.props(out, userId))
+  }
+  
+  def roomWebSocket(roomId: String, userId: String) = WebSocket.accept[IncomingRoomMessage, OutgoingRoomMessage] {
+    request => ActorFlow.actorRef(out => RoomActor.props(out, roomId, userId))
   }
   
 }

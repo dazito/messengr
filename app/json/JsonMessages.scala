@@ -7,17 +7,31 @@ package json
 import play.api.libs.json._
 import play.api.libs.json.Writes._
 
-case class Message(from: String, to: String, text: String, timestamp: Long, uuid: String)
+case class OutgoingMessage(code: Int, message: String)
 
-object Message {
-  implicit val messageWrites = new Writes[Message] {
-    def writes(message: Message) = Json.obj(
-      "from" -> message.from,
-      "to" -> message.to,
-      "text" -> message.text,
-      "uuid" -> message.uuid,
-      "timestamp" -> message.timestamp
-    )
-  }
+object OutgoingMessage {
+  implicit val format = Json.format[OutgoingMessage]
 }
+
+case class IncomingMessage(to: String = "No receiver", text: String = "Not defined")
+
+object IncomingMessage {
+  implicit val format = Json.format[IncomingMessage]
+}
+
+
+
+
+case class IncomingRoomMessage(text: String = "Not defined")
+
+object IncomingRoomMessage {
+  implicit val format = Json.format[IncomingRoomMessage]
+}
+
+case class OutgoingRoomMessage(roomId: String = "No receiver", roomName: String, eventType: String, text: String = "Not defined")
+
+object OutgoingRoomMessage {
+  implicit val format = Json.format[OutgoingRoomMessage]
+}
+
 
