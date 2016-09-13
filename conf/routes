@@ -13,10 +13,10 @@ GET     /message                                    controllers.AsyncController.
 GET     /assets/*file                               controllers.Assets.versioned(path="/public", file: Asset)
 
 #########       REST API        #########
-GET     /api/v0/chat/list                             controllers.ChatController.chatList
-GET     /api/v0/chat/private/list                     controllers.ChatController.chatPrivateList
-GET     /api/v0/chat/public/list                      controllers.ChatController.chatPublicList
-GET     /api/v0/chat/user/:userId/details             controllers.ChatController.getUserDetails(userId: String)
+GET     /api/v0/room/list                             controllers.RoomController.roomList
+GET     /api/v0/room/private/list                     controllers.RoomController.roomPrivateList
+GET     /api/v0/room/public/list                      controllers.RoomController.roomPublicList
+GET     /api/v0/room/user/:userId/details             controllers.RoomController.getUserDetails(userId: String)
 GET     /api/v0/message/:messageId                    controllers.MessageController.getMessageById(messageId: String)
 GET     /api/v0/ws/message/:userId                    controllers.WebSocketController.messageWebSocket(userId: String)
 GET     /api/v0/ws/channel/:roomId/:userId            controllers.WebSocketController.roomWebSocket(roomId: String, userId: String)

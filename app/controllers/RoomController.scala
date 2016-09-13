@@ -8,17 +8,17 @@ import play.api.mvc.{Action, Controller}
   * Created by daz on 04/08/2016.
   */
 @Singleton
-class ChatController extends Controller {
+class RoomController extends Controller {
   
-  def chatList = Action {
+  def roomList = Action {
     Ok("chat list")
   }
   
-  def chatPrivateList = Action {
+  def roomPrivateList = Action {
     Ok("chat private list")
   }
   
-  def chatPublicList = Action {
+  def roomPublicList = Action {
     Ok("chat public list")
   }
   
