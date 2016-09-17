@@ -13,15 +13,17 @@ GET     /message                                    controllers.AsyncController.
 GET     /assets/*file                               controllers.Assets.versioned(path="/public", file: Asset)
 
 #########       REST API        #########
-GET     /api/v0/room/list                             controllers.RoomController.roomList
 GET     /api/v0/room/private/list                     controllers.RoomController.roomPrivateList
 GET     /api/v0/room/public/list                      controllers.RoomController.roomPublicList
-GET     /api/v0/room/user/:userId/details             controllers.RoomController.getUserDetails(userId: String)
+GET     /api/v0/user/:userId/details                  controllers.RoomController.getUserDetails(userId: String)
 GET     /api/v0/message/:messageId                    controllers.MessageController.getMessageById(messageId: String)
 GET     /api/v0/ws/message/:userId                    controllers.WebSocketController.messageWebSocket(userId: String)
-GET     /api/v0/ws/channel/:roomId/:userId            controllers.WebSocketController.roomWebSocket(roomId: String, userId: String)
+GET     /api/v0/ws/room/:userId                    controllers.WebSocketController.roomWebSocket(userId: String)
 
 POST    /api/v0/message/private/:destinationId        controllers.MessageController.sendPrivateMessage(destinationId: String)
 POST    /api/v0/message/public/:destinationId         controllers.MessageController.sendPublicMessage(destinationId: String)
 
+PUT     /api/v0/room/:name/create                     controllers.RoomController.createRoom(name: String)
+
 DELETE  /api/v0/message/:messageId                    controllers.MessageController.deleteMessage(messageId: String)
+DELETE  /api/v0/room/:roomId                          controllers.MessageController.deleteMessage(roomId: String)

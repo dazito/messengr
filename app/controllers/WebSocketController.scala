@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject.Inject
 
-import actors.{MessageActor, RoomActor}
+import actors.{MessageActor, RoomActor, RoomClientActor, RoomMasterActor}
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import json.{IncomingMessage, IncomingRoomMessage, OutgoingMessage, OutgoingRoomMessage}
@@ -28,8 +28,8 @@ class WebSocketController @Inject() (implicit system: ActorSystem, materializer:
     request => ActorFlow.actorRef(out => MessageActor.props(out, userId))
   }
   
-  def roomWebSocket(roomId: String, userId: String) = WebSocket.accept[IncomingRoomMessage, OutgoingRoomMessage] {
-    request => ActorFlow.actorRef(out => RoomActor.props(out, roomId, userId))
+  def roomWebSocket(userId: String) = WebSocket.accept[IncomingRoomMessage, OutgoingRoomMessage] {
+    request => ActorFlow.actorRef(out => RoomClientActor.props(out, userId))
   }
   
 }
