@@ -2,7 +2,7 @@ package actors.module
 
 import javax.inject.Inject
 
-//import actors.RoomActor$
+import actors.RoomMasterActor
 import akka.actor.ActorSystem
 
 /**
@@ -12,6 +12,6 @@ import akka.actor.ActorSystem
   */
 
 class MessengrStartUpActors @Inject()(system: ActorSystem) {
-//  system.actorOf(RoomActor.props, name = RoomActor.getClass.getSimpleName)
+  system.actorOf(RoomMasterActor.props(system), name = RoomMasterActor.getClass.getSimpleName)
 }
 

@@ -30,7 +30,7 @@ class MessageActor(clientActor: ActorRef, userId: String) extends Actor with Act
         persistentActor ! msg
       }
       else {
-        clientActor ! OutgoingMessage(401, "Unauthorized")
+        clientActor ! OutgoingMessage("401", "Unauthorized", DateTime.now().getMillis)
       }
     }
       

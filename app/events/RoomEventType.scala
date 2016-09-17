@@ -5,5 +5,5 @@ package events
   */
 object RoomEventType extends Enumeration {
   type roomEvent = Value
-  val NewMessage, UserJoined, UserLeft = Value
+  val MESSAGE, JOIN, LEAVE, CREATE, DELETE, LIST = Value
 }

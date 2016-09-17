@@ -5,33 +5,37 @@ package json
   */
 
 import play.api.libs.json._
-import play.api.libs.json.Writes._
+import play.api.libs.functional.syntax._
 
-case class OutgoingMessage(code: Int, message: String)
+case class OutgoingMessage(from: String, message: String, timestamp: Long)
 
 object OutgoingMessage {
-  implicit val format = Json.format[OutgoingMessage]
+  implicit val writer = Json.format[OutgoingMessage]
 }
 
-case class IncomingMessage(to: String = "No receiver", text: String = "Not defined")
+case class IncomingMessage(to: String, text: String)
 
 object IncomingMessage {
-  implicit val format = Json.format[IncomingMessage]
+  implicit val reader = Json.format[IncomingMessage]
 }
 
 
 
 
-case class IncomingRoomMessage(text: String = "Not defined")
+case class IncomingRoomMessage(roomId: String, text: Option[String], eventType: String)
 
 object IncomingRoomMessage {
-  implicit val format = Json.format[IncomingRoomMessage]
+  implicit val reader = (
+        (__ \ 'roomId ).read[String] ~
+                (__ \ 'text ).readNullable[String] ~
+                (__ \ 'eventType ).read[String]
+        )(IncomingRoomMessage.apply _)
 }
 
-case class OutgoingRoomMessage(roomId: String = "No receiver", roomName: String, eventType: String, text: String = "Not defined")
+case class OutgoingRoomMessage(roomId: String, userId: String, eventType: String, text: Option[String], timestamp: Long)
 
 object OutgoingRoomMessage {
-  implicit val format = Json.format[OutgoingRoomMessage]
+  implicit val writer = Json.format[OutgoingRoomMessage]
 }
 
 
