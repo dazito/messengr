@@ -38,7 +38,7 @@ class RoomController @Inject() (implicit system: ActorSystem, materializer: Mate
     // TODO: Handle error cases and make it async
     actor ! new CreateRoomCommand(name, UUID.randomUUID().toString, false)
     
-    Ok()
+    Ok("")
   }
   
 }
