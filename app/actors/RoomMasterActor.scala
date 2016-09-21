@@ -31,7 +31,6 @@ class RoomMasterActor @Inject() (system: ActorSystem) extends PersistentActor wi
       chatRooms.foreach { actor => log.info("Channel id: {}", actor._1)}
     }
     case msg: NewMessageCommand => processNewMessageCommand(msg)
-    case msg: String => log.info("{} - Received: {}", RoomMasterActor.getClass.getSimpleName, msg)
     case msg: Any => unhandled(msg)
   }
     
@@ -51,7 +50,7 @@ class RoomMasterActor @Inject() (system: ActorSystem) extends PersistentActor wi
     chatRooms += (roomId -> roomActor)
     
     persist(msg) {
-      // TODO: implement thos logic
+      // TODO: implement this logic
       event => log.info("Room created - Name {} | Room ID: {}", msg.name, roomId)
     }
   }
@@ -62,7 +61,6 @@ class RoomMasterActor @Inject() (system: ActorSystem) extends PersistentActor wi
     val actorRoom = chatRooms.getOrElse(msg.to, None)
     
     actorRoom match {
-//      case room: ActorRef => room forward new NewMessageEvent(msg.fromUser, msg.to, msg.text, msg.uuid, msg.timestamp)
       case room: ActorRef => room forward msg
       case None => log.warning("userId:{}|roomId:{}|room not found", msg.fromUser, msg.to)
     }

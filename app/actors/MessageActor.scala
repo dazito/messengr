@@ -22,7 +22,6 @@ class MessageActor(clientActor: ActorRef, userId: String) extends Actor with Act
   
   override def receive: Receive = {
     case msg: IncomingMessage => {
-      log.info("Received from socket: {}", msg.toString)
   
       val isUserVerified = verifyDestination(msg.to)
   

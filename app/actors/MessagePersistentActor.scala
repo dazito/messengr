@@ -20,16 +20,19 @@ class MessagePersistentActor(clientActor: ActorRef, userId: String) extends Pers
   
   override def receiveCommand: Receive = {
     case newMessageCommand: NewMessageCommand => {
-      log.info("uuid{} | Yey! Persistent actor received a NewMessageCommand!", newMessageCommand.uuid)
+      log.info("uuid{}|fromUser:{}|to:{}|timestamp:{}|received a NewMessageCommand!",
+        newMessageCommand.uuid, newMessageCommand.fromUser, newMessageCommand.to, newMessageCommand.timestamp)
       persist(Json.toJson(newMessageCommand)) {
-        event => log.info("uuid:{} | Event persisted", newMessageCommand.uuid)
+        event =>
+          log.info("uuid{}|fromUser:{}|to:{}|timestamp:{}|event persisted",
+            newMessageCommand.uuid, newMessageCommand.fromUser, newMessageCommand.to, newMessageCommand.timestamp)
           // 200 is OK code
           clientActor ! 200
       }
     }
-    case msg: String => log.info("Got a string - Error? Lets see: {}", msg)
     case msg: RejectedMessageEvent => {
-      log.info("Received a RejectedMessageEvent - Body: {}", msg.body)
+      log.info("fromUser:{}|rejected message event - body: {}",
+        msg.from, msg.body)
       clientActor ! 400
     }
   }
