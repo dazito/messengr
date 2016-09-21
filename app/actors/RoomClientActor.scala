@@ -4,7 +4,7 @@ import java.util.UUID
 
 import akka.actor.{Actor, ActorLogging, ActorRef, ActorSelection, Props}
 import commands.{ListPublicRoomsCommand, NewMessageCommand, UserJoinRoomCommand, UserLeftRoomCommand}
-import events.{JoinedChannelEvent, RoomEventType}
+import events.{JoinedChannelEvent, NewMessageEvent, RoomEventType}
 import json.{IncomingRoomMessage, OutgoingRoomMessage}
 import org.joda.time.DateTime
 
@@ -24,6 +24,7 @@ class RoomClientActor(actorRef: ActorRef, userId: String) extends Actor with Act
   override def receive: Receive = {
     case msg: IncomingRoomMessage => processIncomingRoomMessage(msg)
     case msg: JoinedChannelEvent => actorRef ! new OutgoingRoomMessage(msg.channelId, msg.userId, RoomEventType.JOIN.toString, None, DateTime.now().getMillis)
+    case msg: NewMessageEvent => actorRef ! new OutgoingRoomMessage(msg.from, msg.from, RoomEventType.MESSAGE.toString, Option(msg.text), msg.timestamp)
     case msg: Any => unhandled(msg)
   }
   

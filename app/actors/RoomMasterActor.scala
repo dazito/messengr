@@ -5,8 +5,8 @@ import javax.inject.Inject
 
 import akka.actor.{ActorLogging, ActorRef, ActorSystem, Props}
 import akka.persistence.{PersistentActor, SnapshotOffer}
-import commands.{CreateRoomCommand, ListPublicRoomsCommand, UserJoinRoomCommand}
-import events.JoinedChannelEvent
+import commands.{CreateRoomCommand, ListPublicRoomsCommand, NewMessageCommand, UserJoinRoomCommand}
+import events.{JoinedChannelEvent, NewMessageEvent}
 
 import scala.collection.mutable.{Map => MutableMap}
 
@@ -23,20 +23,14 @@ class RoomMasterActor @Inject() (system: ActorSystem) extends PersistentActor wi
   
   override def persistenceId: String = getClass.getSimpleName
   
+   
   override def receiveCommand: Receive = {
     case msg: UserJoinRoomCommand => processUserJoinRoomCommand(msg)
-    case msg: CreateRoomCommand => {
-      val roomId = UUID.randomUUID().toString
-      val roomActor = system.actorOf(RoomActor.props(self, roomId, msg.userId, msg.isPrivate))
-      chatRooms += (roomId -> roomActor)
-      
-      persist(msg) {
-        event => log.info("Room created - Name {} | Room ID: {}", msg.name, roomId)
-      }
-    }
+    case msg: CreateRoomCommand => processCreateRoomCommand(msg)
     case msg: ListPublicRoomsCommand => {
       chatRooms.foreach { actor => log.info("Channel id: {}", actor._1)}
     }
+    case msg: NewMessageCommand => processNewMessageCommand(msg)
     case msg: String => log.info("{} - Received: {}", RoomMasterActor.getClass.getSimpleName, msg)
     case msg: Any => unhandled(msg)
   }
@@ -48,6 +42,29 @@ class RoomMasterActor @Inject() (system: ActorSystem) extends PersistentActor wi
     actorRoom match {
       case room: ActorRef => room forward  msg
       case None => log.warning("userId:{}|roomId:{}|room not found", msg.userId, msg.roomId)
+    }
+  }
+  
+  def processCreateRoomCommand(msg: CreateRoomCommand): Unit = {
+    val roomId = UUID.randomUUID().toString
+    val roomActor = system.actorOf(RoomActor.props(self, roomId, msg.userId, msg.isPrivate))
+    chatRooms += (roomId -> roomActor)
+    
+    persist(msg) {
+      // TODO: implement thos logic
+      event => log.info("Room created - Name {} | Room ID: {}", msg.name, roomId)
+    }
+  }
+  
+  
+  def processNewMessageCommand(msg: NewMessageCommand): Unit = {
+    log.info("process new message command")
+    val actorRoom = chatRooms.getOrElse(msg.to, None)
+    
+    actorRoom match {
+//      case room: ActorRef => room forward new NewMessageEvent(msg.fromUser, msg.to, msg.text, msg.uuid, msg.timestamp)
+      case room: ActorRef => room forward msg
+      case None => log.warning("userId:{}|roomId:{}|room not found", msg.fromUser, msg.to)
     }
   }
 }

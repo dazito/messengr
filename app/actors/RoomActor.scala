@@ -2,8 +2,8 @@ package actors
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import akka.persistence.{PersistentActor, SnapshotOffer}
-import commands.UserJoinRoomCommand
-import events.JoinedChannelEvent
+import commands.{NewMessageCommand, UserJoinRoomCommand}
+import events.{JoinedChannelEvent, NewMessageEvent}
 import json.IncomingRoomMessage
 
 import scala.collection.mutable.{Map => MutableMap}
@@ -24,17 +24,27 @@ class RoomActor(clientActor: ActorRef, name: String, userId: String, isPrivate: 
   override def receiveCommand: Receive = {
     case msg: IncomingRoomMessage =>  log.warning("IncomingRoomMessage message {}", msg.text)
     case msg: UserJoinRoomCommand => processUserJoinRoomCommand(msg)
+    case msg: NewMessageCommand => processNewMessageCommand(msg)
     case msg: Any => unhandled(msg)
   }
   
   def processUserJoinRoomCommand(msg: UserJoinRoomCommand): Unit = {
-    log.info("User {} joined channel {}", msg.userId, msg.roomId)
+    log.info("userId:{}|roomId:{}|user joined command", getClass.getSimpleName, msg.userId, msg.roomId)
     
     // Notify all users in the channel
     for((key, userActor) <- users) userActor ! new JoinedChannelEvent(msg.userId, msg.roomId)
     
     // Add the user to the list of user in the channel
     users += (msg.userId -> sender())
+    
+    // TODO: Implement the persist logic
+  }
+  
+  def processNewMessageCommand(msg: NewMessageCommand) = {
+    log.info("userId:{}|roomId:{}|process new message command: {}", getClass.getSimpleName, msg.to, msg)
+    
+    // Send the message to all room members
+    for((key, userActor) <- users) userActor ! new NewMessageEvent(msg.fromUser, msg.to, msg.text, msg.uuid, msg.timestamp)
   }
   
   
