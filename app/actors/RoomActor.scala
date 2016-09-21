@@ -29,7 +29,7 @@ class RoomActor(clientActor: ActorRef, name: String, userId: String, isPrivate: 
   }
   
   def processUserJoinRoomCommand(msg: UserJoinRoomCommand): Unit = {
-    log.info("userId:{}|roomId:{}|user joined command", getClass.getSimpleName, msg.userId, msg.roomId)
+    log.info("userId:{}|roomId:{}|user joined command", msg.userId, msg.roomId)
     
     // Notify all users in the channel
     for((key, userActor) <- users) userActor ! new JoinedChannelEvent(msg.userId, msg.roomId)
@@ -41,7 +41,7 @@ class RoomActor(clientActor: ActorRef, name: String, userId: String, isPrivate: 
   }
   
   def processNewMessageCommand(msg: NewMessageCommand) = {
-    log.info("userId:{}|roomId:{}|process new message command: {}", getClass.getSimpleName, msg.to, msg)
+    log.info("userId:{}|roomId:{}|process new message command", msg.fromUser, msg.to)
     
     // Send the message to all room members
     for((key, userActor) <- users) userActor ! new NewMessageEvent(msg.fromUser, msg.to, msg.text, msg.uuid, msg.timestamp)
